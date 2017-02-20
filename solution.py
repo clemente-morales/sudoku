@@ -54,7 +54,13 @@ def grid_values(grid):
             Keys: The boxes, e.g., 'A1'
             Values: The value in each box, e.g., '8'. If the box has no value, then the value will be '123456789'.
     """
-    pass
+    sudoku = dict(zip(boxes, grid))
+    
+    for k, v in sudoku.items():
+        if v == '.' :
+            sudoku[k] = '123456789'
+    
+    return sudoku
 
 def display(values):
     """
