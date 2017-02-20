@@ -1,4 +1,26 @@
+rows = 'ABCDEFGHI'
+cols = '123456789'
+
 assignments = []
+
+def cross(A, B):
+    "Cross product of elements in A and elements in B."
+    return [s+t for s in A for t in B]
+
+boxes = cross(rows, cols)
+
+row_units = [cross(r, cols) for r in rows]
+column_units = [cross(rows, c) for c in cols]
+square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
+unitlist = row_units + column_units + square_units
+units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
+peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
+
+def count_boxes_solved(values): 
+    return len([box for box in values.keys() if len(values[box]) == 1])
+
+def get_unfilled_squares(values): 
+    return [box for box in values.keys() if len(values[box]) > 1]
 
 def assign_value(values, box, value):
     """
@@ -22,10 +44,6 @@ def naked_twins(values):
     # Find all instances of naked twins
     # Eliminate the naked twins as possibilities for their peers
 
-def cross(A, B):
-    "Cross product of elements in A and elements in B."
-    pass
-
 def grid_values(grid):
     """
     Convert grid into a dict of {square: char} with '123456789' for empties.
@@ -41,10 +59,16 @@ def grid_values(grid):
 def display(values):
     """
     Display the values as a 2-D grid.
-    Args:
-        values(dict): The sudoku in dictionary form
+    Input: The sudoku in dictionary form
+    Output: None
     """
-    pass
+    width = 1+max(len(values[s]) for s in boxes)
+    line = '+'.join(['-'*(width*3)]*3)
+    for r in rows:
+        print(''.join(values[r+c].center(width)+('|' if c in '36' else '')
+                      for c in cols))
+        if r in 'CF': print(line)
+    return
 
 def eliminate(values):
     pass
