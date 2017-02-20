@@ -32,7 +32,7 @@ def assign_value(values, box, value):
         assignments.append(values.copy())
     return values
 
-def naked_twins(values):
+def naked_twins(solution):
     """Eliminate values using the naked twins strategy.
     Args:
         values(dict): a dictionary of the form {'box_name': '123456789', ...}
@@ -40,6 +40,19 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
+    # Find all instances of naked twins
+    for k, v in solution.items():
+        unit_values = list(map(lambda box: solution[box], peers[k]))
+        unit_values.append(solution[k])
+        naked_twins = [(box, solution[box]) for box in peers[k] if len(solution[box]) ==2 and unit_values.count(solution[box])==2]
+    
+        # Eliminate the naked twins as possibilities for their peers
+        for twin, twin_value in naked_twins:
+            peer_keys = peers[twin]
+            for peer_key in peer_keys:
+                if (solution[peer_key] != twin_value and len(solution[peer_key]) > 1): 
+                    solution[peer_key] = "".join(filter(lambda char: char not in twin_value, solution[peer_key]))
+    return solution
 
     # Find all instances of naked twins
     # Eliminate the naked twins as possibilities for their peers
