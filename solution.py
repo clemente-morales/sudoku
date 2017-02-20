@@ -87,8 +87,8 @@ def eliminate(values):
     Returns:
         Resulting Sudoku in dictionary form after eliminating values.
     """
-    solution = sudoku.copy()
-    for k, v in sudoku.items():
+    solution = values.copy()
+    for k, v in values.items():
         if len(v) == 1 :
             peer_keys = peers[k]
 
@@ -182,6 +182,8 @@ def solve(grid):
     Returns:
         The dictionary representation of the final sudoku grid. False if no solution exists.
     """
+    return search(grid_values(grid))
+    
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
     display(solve(diag_sudoku_grid))
