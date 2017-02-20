@@ -99,7 +99,22 @@ def eliminate(values):
     return solution 
 
 def only_choice(values):
-    pass
+    """Finalize all values that are the only choice for a unit.
+
+    Go through all the units, and whenever there is a unit with a value
+    that only fits in one box, assign the value to this box.
+
+    Input: Sudoku in dictionary form.
+    Output: Resulting Sudoku in dictionary form after filling in only choices.
+    """
+    for unit in unitlist:
+        validValues = '123456789'
+        for digit in validValues:
+            ocurrences = list(filter(lambda peer : digit in values[peer], unit))
+            if len(ocurrences) == 1:
+                values[ocurrences[0]] = digit
+    
+    return values
 
 def reduce_puzzle(values):
     pass
@@ -116,7 +131,6 @@ def solve(grid):
     Returns:
         The dictionary representation of the final sudoku grid. False if no solution exists.
     """
-
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
     display(solve(diag_sudoku_grid))
