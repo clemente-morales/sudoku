@@ -122,7 +122,7 @@ def reduce_puzzle(values):
     Apply Elimination and only choice technique to narrow the answer.  
 
     Input: Sudoku in dictionary form.
-    Output: Resulting Sudoku in dictionary form after filling in only choices.
+    Output: Resulting Sudoku in dictionary form after after applying the constrains.
     """
     stalled = False
     while not stalled:
@@ -145,7 +145,33 @@ def reduce_puzzle(values):
     return values
 
 def search(values):
-    pass
+    """Using depth-first search and propagation, create a search tree and solve the sudoku.  
+
+    Input: Sudoku in dictionary form.
+    Output: Solution for the Sudoku.
+    """
+    # First, reduce the puzzle using the previous function
+    values = reduce_puzzle(values)
+    
+    if values is False:
+        return False
+    
+    if count_boxes_solved(values) == 81:
+        return values
+    
+    # Choose one of the unfilled squares with the fewest possibilities
+    unfilled_boxes = get_unfilled_squares(values)
+    unfilled_boxes.sort(key = lambda s: len(values[s]))
+    box_to_attempt_key = unfilled_boxes[0]
+    box_to_attempt_value = values[box_to_attempt_key] 
+    
+    # Now use recursion to solve each one of the resulting sudokus, and if one returns a value (not False), return that answer!
+    for possible_value in box_to_attempt_value:
+        potential_solution = values.copy()
+        potential_solution[box_to_attempt_key] = possible_value
+        potential_solution = search(potential_solution)
+        if (potential_solution):
+            return potential_solution
 
 def solve(grid):
     """
