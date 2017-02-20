@@ -117,7 +117,32 @@ def only_choice(values):
     return values
 
 def reduce_puzzle(values):
-    pass
+    """Apply constrains to narrow the possibilities of the answer.
+
+    Apply Elimination and only choice technique to narrow the answer.  
+
+    Input: Sudoku in dictionary form.
+    Output: Resulting Sudoku in dictionary form after filling in only choices.
+    """
+    stalled = False
+    while not stalled:
+        # Check how many boxes have a determined value
+        solved_values_before = count_boxes_solved(values)
+
+        # Apply constrains 
+        values = eliminate(values)
+        values = only_choice(values)
+
+        # Check how many boxes have a determined value, to compare
+        solved_values_after = count_boxes_solved(values)
+        
+        # If no new values were added, stop the loop.
+        stalled = solved_values_before == solved_values_after
+        
+        # Sanity check, return False if there is a box with zero available values:
+        if len([box for box in values.keys() if len(values[box]) == 0]):
+            return False
+    return values
 
 def search(values):
     pass
