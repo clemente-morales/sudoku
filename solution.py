@@ -40,18 +40,22 @@ def naked_twins(solution):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-    # Find all instances of naked twins
-    for k, v in solution.items():
-        unit_values = list(map(lambda box: solution[box], peers[k]))
-        unit_values.append(solution[k])
-        naked_twins = [(box, solution[box]) for box in peers[k] if len(solution[box]) ==2 and unit_values.count(solution[box])==2]
-    
-        # Eliminate the naked twins as possibilities for their peers
+    solution = apply_naked(column_units, solution)
+    return apply_naked(row_units, solution)
+
+def apply_naked(units, solution):
+    for unit in units:
+        # Find all instances of naked twins
+        unit_values = list(map(lambda box: solution[box], unit))
+        naked_twins = [(box, solution[box]) for box in unit if len(solution[box]) == 2 and unit_values.count(solution[box])==2]
+        
+        # Eliminate the naked twins as possibilities
         for twin, twin_value in naked_twins:
             peer_keys = peers[twin]
-            for peer_key in peer_keys:
+            for peer_key in unit:
                 if (solution[peer_key] != twin_value and len(solution[peer_key]) > 1): 
                     solution[peer_key] = "".join(filter(lambda char: char not in twin_value, solution[peer_key]))
+                    
     return solution
 
     # Find all instances of naked twins
