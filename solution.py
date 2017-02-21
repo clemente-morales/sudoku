@@ -21,8 +21,6 @@ upper_right_to_left_bottom = [row+col for (row, col) in zip(rows, cols[::-1])]
 
 unitlist = row_units + column_units + square_units
 
-unitlist_with_x = row_units + column_units + square_units + upper_left_to_right_bottom + upper_right_to_left_bottom
-
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 
 # complete units with upper_left_to_right_bottom
@@ -33,6 +31,9 @@ for k, v in units.items():
         units[k].append(upper_right_to_left_bottom)
 
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
+
+unitlist.append(upper_left_to_right_bottom)
+unitlist.append(upper_right_to_left_bottom)
 
 def count_boxes_solved(values): 
     return len([box for box in values.keys() if len(values[box]) == 1])
