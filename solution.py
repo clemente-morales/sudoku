@@ -12,8 +12,28 @@ boxes = cross(rows, cols)
 row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
+
+# ['A1', 'B2', 'C3', 'D4', 'E5', 'F6', 'G7', 'H8', 'I9']
+upper_left_to_right_bottom = [row+col for (row, col) in zip(rows, cols)]
+
+# ['A9', 'B8', 'C7', 'D6', 'E5', 'F4', 'G3', 'H2', 'I1']
+upper_right_to_left_bottom = [row+col for (row, col) in zip(rows, cols[::-1])]
+
+unitlist = row_units + column_units + square_units + upper_left_to_right_bottom + upper_right_to_left_bottom 
+
 unitlist = row_units + column_units + square_units
+
+unitlist_with_x = unitlist + upper_left_to_right_bottom + upper_right_to_left_bottom
+
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
+
+# complete units with upper_left_to_right_bottom
+for k, v in units.items():
+    if k in upper_left_to_right_bottom:
+        units[k].append(upper_left_to_right_bottom)
+    elif k in upper_right_to_left_bottom:
+        units[k].append(upper_right_to_left_bottom)
+
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
 def count_boxes_solved(values): 
@@ -124,7 +144,7 @@ def only_choice(values):
     Input: Sudoku in dictionary form.
     Output: Resulting Sudoku in dictionary form after filling in only choices.
     """
-    for unit in unitlist:
+    for unit in unitlist_with_x:
         validValues = '123456789'
         for digit in validValues:
             ocurrences = list(filter(lambda peer : digit in values[peer], unit))
@@ -146,9 +166,10 @@ def reduce_puzzle(values):
         # Check how many boxes have a determined value
         solved_values_before = count_boxes_solved(values)
 
-        # Apply constrains 
-        values = eliminate(values)
+        # Apply constrains
+        values = eliminate(values) 
         values = only_choice(values)
+        values = naked_twins(values)
 
         # Check how many boxes have a determined value, to compare
         solved_values_after = count_boxes_solved(values)
