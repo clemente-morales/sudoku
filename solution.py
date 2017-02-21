@@ -17,13 +17,11 @@ square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','45
 upper_left_to_right_bottom = [row+col for (row, col) in zip(rows, cols)]
 
 # ['A9', 'B8', 'C7', 'D6', 'E5', 'F4', 'G3', 'H2', 'I1']
-upper_right_to_left_bottom = [row+col for (row, col) in zip(rows, cols[::-1])]
-
-unitlist = row_units + column_units + square_units + upper_left_to_right_bottom + upper_right_to_left_bottom 
+upper_right_to_left_bottom = [row+col for (row, col) in zip(rows, cols[::-1])] 
 
 unitlist = row_units + column_units + square_units
 
-unitlist_with_x = unitlist + upper_left_to_right_bottom + upper_right_to_left_bottom
+unitlist_with_x = row_units + column_units + square_units + upper_left_to_right_bottom + upper_right_to_left_bottom
 
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 
@@ -144,7 +142,7 @@ def only_choice(values):
     Input: Sudoku in dictionary form.
     Output: Resulting Sudoku in dictionary form after filling in only choices.
     """
-    for unit in unitlist_with_x:
+    for unit in unitlist:
         validValues = '123456789'
         for digit in validValues:
             ocurrences = list(filter(lambda peer : digit in values[peer], unit))
