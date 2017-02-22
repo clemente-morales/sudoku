@@ -41,6 +41,20 @@ def count_boxes_solved(values):
 def get_unfilled_squares(values): 
     return [box for box in values.keys() if len(values[box]) > 1]
 
+def display(values):
+    """
+    Display the values as a 2-D grid.
+    Input: The sudoku in dictionary form
+    Output: None
+    """
+    width = 1+max(len(values[s]) for s in boxes)
+    line = '+'.join(['-'*(width*3)]*3)
+    for r in rows:
+        print(''.join(values[r+c].center(width)+('|' if c in '36' else '')
+                      for c in cols))
+        if r in 'CF': print(line)
+    return
+
 def assign_value(values, box, value):
     """
     Please use this function to update your values dictionary!
@@ -73,12 +87,10 @@ def apply_naked(units, solution):
             peer_keys = peers[twin]
             for peer_key in unit:
                 if (solution[peer_key] != twin_value and len(solution[peer_key]) > 1): 
-                    solution[peer_key] = "".join(filter(lambda char: char not in twin_value, solution[peer_key]))
+                    value = "".join(filter(lambda char: char not in twin_value, solution[peer_key]))
+                    assign_value(solution, peer_key, value)
                     
     return solution
-
-    # Find all instances of naked twins
-    # Eliminate the naked twins as possibilities for their peers
 
 def grid_values(grid):
     """
@@ -98,20 +110,6 @@ def grid_values(grid):
     
     return sudoku
 
-def display(values):
-    """
-    Display the values as a 2-D grid.
-    Input: The sudoku in dictionary form
-    Output: None
-    """
-    width = 1+max(len(values[s]) for s in boxes)
-    line = '+'.join(['-'*(width*3)]*3)
-    for r in rows:
-        print(''.join(values[r+c].center(width)+('|' if c in '36' else '')
-                      for c in cols))
-        if r in 'CF': print(line)
-    return
-
 def eliminate(values):
     """Eliminate values from peers of each box with a single value.
 
@@ -129,7 +127,8 @@ def eliminate(values):
             peer_keys = peers[k]
 
             for peer_key in peer_keys:
-                solution[peer_key] = "".join(filter(lambda char: char != v, solution[peer_key]))
+                value = "".join(filter(lambda char: char != v, solution[peer_key]))
+                assign_value(solution, peer_key, value)
     
     
     return solution 
@@ -148,7 +147,7 @@ def only_choice(values):
         for digit in validValues:
             ocurrences = list(filter(lambda peer : digit in values[peer], unit))
             if len(ocurrences) == 1:
-                values[ocurrences[0]] = digit
+                assign_value(values, ocurrences[0], digit)
     
     return values
 
@@ -223,7 +222,8 @@ def solve(grid):
     
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
-    display(solve(diag_sudoku_grid))
+    solution = solve(diag_sudoku_grid)
+    display(solution)
 
     try:
         from visualize import visualize_assignments
