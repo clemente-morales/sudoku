@@ -23,7 +23,7 @@ unitlist = row_units + column_units + square_units
 
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 
-# complete units with upper_left_to_right_bottom
+# complete units with upper_left_to_right_bottom and upper_right_to_left_bottom
 for k, v in units.items():
     if k in upper_left_to_right_bottom:
         units[k].append(upper_left_to_right_bottom)
